@@ -149,7 +149,22 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     # TODO: Implement function
     sess.run(tf.global_variables_initializer())
 
-    
+    print('Starting training...')
+    print()
+    for epoch in range(epochs):
+        print('Epoch : {}'.format(epoch + 1))
+        for image, label in get_batches_fn(batch_size):
+            _, loss = sess.run([train_op, cross_entropy_loss],
+                                feed_dict={
+                                    input_image: image,
+                                    correct_label: label,
+                                    keep_prob: 0.5,
+                                    learning_rate: 0.00001
+                                })
+            print('Loss: {:.3f}'.format(loss))
+        print()
+    print('Training finished')
+
 tests.test_train_nn(train_nn)
 
 
@@ -178,10 +193,28 @@ def run():
 
         # TODO: Build NN using load_vgg, layers, and optimize function
 
+        # Placeholders
+        correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
+        learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+
+        # Getting layers from vgg.
+        input_image, keep_prob, layer3_out, layer4_out, layer7_out = load_vgg(sess, vgg_path)
+
+        # Creating new layers.
+        layer_output = layers(layer3_out, layer4_out, layer7_out, num_classes)
+
+        # Creating loss and optimizer operations.
+        logits, train_op, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
+
         # TODO: Train NN using the train_nn function
+        epochs = 6
+        batch_size = 5
+
+        train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image,
+                 correct_label, keep_prob, learning_rate)
 
         # TODO: Save inference data using helper.save_inference_samples
-        #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
 
         # OPTIONAL: Apply the trained model to a video
 
