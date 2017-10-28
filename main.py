@@ -64,7 +64,8 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
                                      1, # kernel_size
                                      padding = 'same',
                                      kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                     name='conv_1x1_of_7')
     # Upsample deconvolution x 2
     first_upsamplex2 = tf.layers.conv2d_transpose(conv_1x1_of_7,
                                                   num_classes,
@@ -72,15 +73,17 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
                                                   strides= (2, 2),
                                                   padding= 'same',
                                                   kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                                  kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                                  kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                                  name='first_upsamplex2')
     conv_1x1_of_4 = tf.layers.conv2d(vgg_layer4_out,
                                      num_classes,
                                      1, # kernel_size
                                      padding = 'same',
                                      kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                     name='conv_1x1_of_4')
     # Adding skip layer.
-    first_skip = tf.add(first_upsamplex2, conv_1x1_of_4)
+    first_skip = tf.add(first_upsamplex2, conv_1x1_of_4, name='first_skip')
     # Upsample deconvolutions x 2.
     second_upsamplex2 = tf.layers.conv2d_transpose(first_skip,
                                                    num_classes,
@@ -88,21 +91,24 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
                                                    strides= (2, 2),
                                                    padding= 'same',
                                                    kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                                   kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                                   name='second_upsamplex2')
     conv_1x1_of_3 = tf.layers.conv2d(vgg_layer3_out,
                                      num_classes,
                                      1, # kernel_size
                                      padding = 'same',
                                      kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                     kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                     name='conv_1x1_of_3')
     # Adding skip layer.
-    second_skip = tf.add(second_upsamplex2, conv_1x1_of_3)
+    second_skip = tf.add(second_upsamplex2, conv_1x1_of_3, name='second_skip')
     # Upsample deconvolution x 8.
     third_upsamplex8 = tf.layers.conv2d_transpose(second_skip, num_classes, 16,
                                                   strides= (8, 8),
                                                   padding= 'same',
                                                   kernel_initializer = tf.random_normal_initializer(stddev=weights_initializer_stddev),
-                                                  kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2))
+                                                  kernel_regularizer= tf.contrib.layers.l2_regularizer(weights_regularized_l2),
+                                                  name='third_upsamplex8')
     return third_upsamplex8
 tests.test_layers(layers)
 
