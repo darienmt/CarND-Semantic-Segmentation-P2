@@ -5,24 +5,24 @@ Udacity Self-Driving Car Nanodegree - Semantic Segmentation Project
 
 # Overview
 
-The object of this project is to label the pixels of a road image using the Fully Convolutional Network (FCN) described in the [Fully Convolutional Networks for Semantic Segmentation](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf) by Jonathan Long, Even Shelhamer and Trevor Darrel. The project is based on the starting project provided by Udacity in [this repo](https://github.com/udacity/CarND-Semantic-Segmentation).
+The object of this project is to label the pixels of a road image using the Fully Convolutional Network (FCN) described in the [Fully Convolutional Networks for Semantic Segmentation](https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf) by Jonathan Long, Even Shelhamer, and Trevor Darrel. The project is based on the starting project provided by Udacity in [this repo](https://github.com/udacity/CarND-Semantic-Segmentation).
 
 # Prerequisites
 
-Based on Udacity's start project the following frameworks and packages should be installed in order to execute the code:
+Based on Udacity's start project the following frameworks and packages should be installed to execute the code:
 
 - [Python 3](https://www.python.org/)
 - [TensorFlow](https://www.tensorflow.org/)
 - [NumPy](http://www.numpy.org/)
 - [SciPy](https://www.scipy.org/)
 
-I provide an environment configuration on [environment.yml](./environment.yml) in order to reproduce the package selection. I used it to make sure the basic of the code was working properly, but without access to a local GPU the code ran to slow. To run code properly, I created a Spot instance on AWS following the procedure explained on the class with the Udacity's udacity-cardnf-advanced-deep-learning Comunity AMI. The instance type was `g3.4xlarge`. The only package I have to install manually was (tqdm)[https://pypi.python.org/pypi/tqdm].
+I provide an environment configuration on [environment.yml](./environment.yml) in order to reproduce the package selection. I used it to make sure the basic of the code was working properly, but without access to a local GPU, the code ran too slow. To run code properly, I created a Spot instance on AWS following the procedure explained in the class with the Udacity's udacity-cardnf-advanced-deep-learning Comunity AMI. The instance type was `g3.4xlarge`. The only package I have to install manually was (tqdm)[https://pypi.python.org/pypi/tqdm].
 
-The dataset used in this project is the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php). It could be download from [here](http://www.cvlibs.net/download.php?file=data_road.zip) or use the script [download_images.sh][./data/download_images.sh].
+The dataset used in this project is the [Kitti Road dataset](http://www.cvlibs.net/datasets/kitti/eval_road.php). It could be download from [here](http://www.cvlibs.net/download.php?file=data_road.zip) or use the script [download_images.sh](./data/download_images.sh).
 
 # Code description
 
-Most of the code is inside [`main.py`](./main.py) [`run`](./main.py#L178) method. The code download a pre-trained VGG16 model and extract the input, keep probability, layer 3, layer 4 and layer 7 from it (method [`load_vgg`](./main.py#L20) from line 20 to line 44). Those layers are used in the [`layers`](./main.py#L49) to create the rest of the network:
+Most of the code is inside [`main.py`](./main.py) [`run`](./main.py#L178) method. The code downloads a pre-trained VGG16 model and extract the input, keep probability, layer 3, layer 4 and layer 7 from it (method [`load_vgg`](./main.py#L20) from line 20 to line 44). Those layers are used in the [`layers`](./main.py#L49) to create the rest of the network:
 
 - One convolutional layer with kernel 1 from VGG's layer 7 ([line 62](./main.py#L62)).
 - One deconvolutional layer with kernel 4 and stride 2 from the first convolutional layer ([line 70](./main.py#L70)).
@@ -35,9 +35,9 @@ Most of the code is inside [`main.py`](./main.py) [`run`](./main.py#L178) method
 
 Every created convolutional and deconvolutional layer use a random-normal kernel initializer with standard deviation 0.01 and a L2 kernel regularizer with L2 0.001.
 
-Once the network structure is defined, the optimizer and the cross-entropy lost is defined on the [`optimize`](./main.py#L116) method using [Adam optimizer](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).
+Once the network structure is defined, the optimizer and the cross-entropy lost is defined on the [`optimize`](./main.py#L116)(from line 116 to line 136) method using [Adam optimizer](https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam).
 
-The network is trained using the [`train_nn`](./main.py#L140) using keep probability 0.5 and learning rate 0.00001. To facilitate the loss value analysis later on, every batch loss values are stored on an array and the array is printed for each epoch.
+The network is trained using the [`train_nn`](./main.py#L140) (from line 140 to line 174) using keep probability 0.5 and learning rate 0.00001. To facilitate the loss value analysis, later on, every batch loss values are stored in an array, and the array is printed for each epoch.
 
 # Training
 
@@ -61,7 +61,7 @@ The last epoch loss mean and standard deviation were:
 
 # Sample images
 
-It was very interesting to see how the segmentation improve when the epochs increase.
+It was fascinating to see how the segmentation improve when the epochs increase.
 
 ## 6 Epochs
 
